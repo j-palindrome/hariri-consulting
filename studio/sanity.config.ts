@@ -6,43 +6,46 @@ import {presentationTool, DocumentLocationResolver} from 'sanity/presentation'
 import {Observable, map} from 'rxjs'
 import _ from 'lodash'
 
-export const projectId = process.env.SANITY_STUDIO_PROJECT_ID!
-export const dataset = process.env.SANITY_STUDIO_DATASET!
+export const projectId = 'nctksjox'
+export const dataset ='production'
+export const studioURL = undefined
+export const stegaEnabled = true
 
-const locate: DocumentLocationResolver = (params, context) => {
-  const {documentStore} = context
 
-  if (params.type === 'post') {
-    // Listen to the query and fetch the draft and published document
-    const doc$ = documentStore.listenQuery(`*[_id == $id][0]{slug,title}`, params, {
-      perspective: 'previewDrafts',
-    }) as Observable<{
-      slug: {current: string | null} | null
-      title: string | null
-    } | null>
+// const locate: DocumentLocationResolver = (params, context) => {
+//   const {documentStore} = context
 
-    return doc$.pipe(
-      map((doc) => {
-        if (!doc || !doc.slug?.current) return null
+//   if (params.type === 'post') {
+//     // Listen to the query and fetch the draft and published document
+//     const doc$ = documentStore.listenQuery(`*[_id == $id][0]{slug,title}`, params, {
+//       perspective: 'previewDrafts',
+//     }) as Observable<{
+//       slug: {current: string | null} | null
+//       title: string | null
+//     } | null>
 
-        return {
-          locations: [
-            {
-              title: doc.title || 'Untitled',
-              href: `/post/${doc.slug.current}`,
-            },
-            {
-              title: 'Posts',
-              href: `/`,
-            },
-          ],
-        }
-      }),
-    )
-  }
+//     return doc$.pipe(
+//       map((doc) => {
+//         if (!doc || !doc.slug?.current) return null
 
-  return null
-}
+//         return {
+//           locations: [
+//             {
+//               title: doc.title || 'Untitled',
+//               href: `/post/${doc.slug.current}`,
+//             },
+//             {
+//               title: 'Posts',
+//               href: `/`,
+//             },
+//           ],
+//         }
+//       }),
+//     )
+//   }
+
+//   return null
+// }
 
 const structureOptions: StructureToolOptions = {
   structure: (S) =>
@@ -65,7 +68,6 @@ export default defineConfig({
     structureTool(structureOptions),
     presentationTool({
       previewUrl: process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000',
-      locate,
     }),
     visionTool(),
   ],
